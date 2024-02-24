@@ -1,0 +1,21 @@
+version: '3'
+
+services:
+  rabbitmq:
+    image: rabbitmq:3.8.19
+    ports:
+      - "5672:5672"  # AMQP port
+      - "15672:15672"  # Management UI port
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD}
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq  # Persist RabbitMQ data
+    healthcheck:
+      test: "nc -z localhost 5672"  # Check if RabbitMQ port is open
+      interval: 10s  # Check every 10 seconds
+      timeout: 5s  # Timeout after 5 seconds
+      retries: 3  # Retry 3 times if health check fails
+
+volumes:
+  rabbitmq_data:
